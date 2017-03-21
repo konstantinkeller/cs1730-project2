@@ -15,6 +15,7 @@ class Editor {
         Editor();
         Editor(char * file);
         string getContents();
+        int countLines();
 };
 
 #endif

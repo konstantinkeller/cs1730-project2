@@ -6,27 +6,21 @@ using namespace std;
 void init_ncurses();
 static void quit();
 
+char * fname;
 int trow, tcol; // rows and cols in screen
 int crow, ccol; // coordinates of cursor
 int lines; // lines in file
 int ppos; // pad position
+int psize;
+string cont; // file contents
 WINDOW * filePad; // file content pad
 
 // TODO: argument/error handling
 int main(const int argc, char * argv[]) {
-    char * fname;
-
     fname = argv[1];
     Editor te(fname); // new editor object using existing file
-    string cont = te.getContents(); // fills content string with file contents
-
-    // calculates number of lines in file by counting newlines
-    lines = 0;
-    size_t nPos = cont.find("\n", 0);
-    while (nPos != string::npos) {
-        lines++;
-        nPos = cont.find("\n", nPos+1);
-    }
+    cont = te.getContents(); // fills content string with file contents
+    lines = te.countLines();
 
     init_ncurses();
 
@@ -44,12 +38,18 @@ int main(const int argc, char * argv[]) {
         switch(ch) {
             case KEY_UP:
                 if (crow > 0) {
+                    if (crow == ppos) {
+                        ppos--;
+                    }
                     crow--;
                 }
                 wmove(filePad, crow, ccol);
                 break;
             case KEY_DOWN:
                 if (crow < lines-1) {
+                    if (crow == ppos+psize) {
+                        ppos++;
+                    }
                     crow++;
                 }
                 wmove(filePad, crow, ccol);
@@ -85,11 +85,12 @@ void init_ncurses() {
 
     mvaddstr(0, 0, "F1: MENU  F2: QUIT");
     mvaddstr(0, (tcol-strlen(header))/2, header);
-    mvaddstr(trow-1, 0, "FILENAME GOES HERE"); // TODO: replace with filename
+    mvaddstr(trow-1, 0, fname);
 
     filePad = newpad(lines, tcol-2);
     keypad(filePad, true);
     nodelay(filePad, true);
+    psize = trow-4;
 
     refresh();
 }
