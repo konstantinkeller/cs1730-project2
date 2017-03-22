@@ -93,6 +93,15 @@ void init_ncurses() {
     psize = trow-4;
 
     refresh();
+    
+  WINDOW * text_area;
+  text_area = newwin(LINES-2,COLS-2,1,1);
+  box(text_area, '*', '*');
+  wrefresh(text_area);
+  getch();
+  delwin(text_area);
+  endwin();
+
 }
 
 static void quit() {
