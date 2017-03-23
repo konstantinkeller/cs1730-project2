@@ -94,12 +94,13 @@ void init_ncurses() {
 
     refresh();
     
-  WINDOW * text_area;
-  text_area = newwin(LINES-2,COLS-2,1,1);
-  box(text_area, '*', '*');
+  WINDOW * text_area; //new window on top of the stdscr
+  text_area = newwin(LINES-2,COLS-2,1,1); //setting dimensions of text_area window
+  box(text_area, '|', '-'); //border characters(i still get letters on the corners :|)
+  wmove(text_area,1,1); //move cursor to text area window
   wrefresh(text_area);
   getch();
-  delwin(text_area);
+  delwin(text_area); //deallocate
   endwin();
 
 }
