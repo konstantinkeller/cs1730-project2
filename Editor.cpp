@@ -5,6 +5,13 @@
 using namespace std;
 
 /**
+ * Editor constructor for new file
+ */
+Editor::Editor() {
+    Editor::contents = "";
+} 
+
+/**
  * Editor constructor for existing file
  */
 Editor::Editor(char * file) {

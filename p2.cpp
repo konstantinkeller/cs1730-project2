@@ -17,10 +17,15 @@ WINDOW * filePad; // file content pad
 
 // TODO: argument/error handling
 int main(const int argc, char * argv[]) {
-    fname = argv[1];
-    Editor te(fname); // new editor object using existing file
-    cont = te.getContents(); // fills content string with file contents
-    lines = te.countLines();
+    Editor ed;
+    if (argc > 1) {
+        fname = argv[1];
+        ed = Editor(fname); // new editor object using existing file
+    } else {
+        ed = Editor();
+    }
+    cont = ed.getContents(); // fills content string with file contents
+    lines = ed.countLines();
 
     init_ncurses();
 
@@ -28,7 +33,7 @@ int main(const int argc, char * argv[]) {
     wmove(filePad, 0, 0);
 
     ppos = 0;
-    prefresh(filePad, ppos, 0, 2, 0, trow-2, tcol);
+    prefresh(filePad, ppos, 0, 2, 1, trow-3, tcol-2);
 
     crow = 0;
     ccol = 0;
@@ -67,7 +72,7 @@ int main(const int argc, char * argv[]) {
                 wmove(filePad, crow, ccol);
                 break;
         }
-        prefresh(filePad, ppos, 0, 2, 0, trow-2, tcol);
+        prefresh(filePad, ppos, 0, 2, 1, trow-3, tcol-2);
     }
 
     quit();
@@ -85,24 +90,26 @@ void init_ncurses() {
 
     mvaddstr(0, 0, "F1: MENU  F2: QUIT");
     mvaddstr(0, (tcol-strlen(header))/2, header);
-    mvaddstr(trow-1, 0, fname);
+    if (fname) {
+        mvaddstr(trow-1, 0, fname);
+    } else {
+        mvaddstr(trow-1, 0, "*NEW FILE*");
+    }
 
-    filePad = newpad(lines, tcol-2);
+
+    filePad = newpad(10000, tcol-2);
     keypad(filePad, true);
     nodelay(filePad, true);
-    psize = trow-4;
+    psize = trow-5;
 
     refresh();
     
-  WINDOW * text_area; //new window on top of the stdscr
-  text_area = newwin(LINES-2,COLS-2,1,1); //setting dimensions of text_area window
-  box(text_area, '|', '-'); //border characters(i still get letters on the corners :|)
-  wmove(text_area,1,1); //move cursor to text area window
-  wrefresh(text_area);
-  getch();
-  delwin(text_area); //deallocate
-  endwin();
-
+    WINDOW * text_border; // new window on top of the stdscr
+    text_border = newwin(LINES-2,COLS,1,0); // setting dimensions of text_area window
+    box(text_border, 0, 0); // window border
+    wrefresh(text_border);
+    delwin(text_border); // deallocate
+    endwin();
 }
 
 static void quit() {
