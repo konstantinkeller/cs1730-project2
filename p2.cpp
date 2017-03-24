@@ -5,16 +5,19 @@
 using namespace std;
 
 void init_ncurses();
+void updateText();
+void input(int);
 static void quit();
 
 char * fname;
 int trow, tcol; // rows and cols in screen
 int crow, ccol; // coordinates of cursor
-int lines; // lines in file
 int ppos; // pad position
 int psize;
+int lines;
+bool doExit = false;
 Editor ed;
-Buffer * cont; // file contents
+Buffer * cont;
 WINDOW * filePad; // file content pad
 
 // TODO: argument/error handling
@@ -25,57 +28,19 @@ int main(const int argc, char * argv[]) {
     } else {
         ed = Editor(); // new editor object using new file
     }
-    cont = ed.getBuffer(); // fills content string with file contents
-    lines = cont->text.size()-1; // gets size of lines buffer
 
     init_ncurses();
 
-    for (int i = 0; i < lines; i++) {
-        mvwprintw(filePad, i, 0, cont->text[i].c_str());
-    }
-    wmove(filePad, 0, 0);
-
     ppos = 0;
-    prefresh(filePad, ppos, 0, 2, 1, trow-3, tcol-2);
-
     crow = 0;
     ccol = 0;
-
-    int ch;
-    while ((ch = wgetch(filePad)) != KEY_F(2)) {
-        switch(ch) {
-            case KEY_UP:
-                if (crow > 0) {
-                    if (crow == ppos) {
-                        ppos--;
-                    }
-                    crow--;
-                }
-                wmove(filePad, crow, ccol);
-                break;
-            case KEY_DOWN:
-                if (crow < lines-1) {
-                    if (crow == ppos+psize) {
-                        ppos++;
-                    }
-                    crow++;
-                }
-                wmove(filePad, crow, ccol);
-                break;
-            case KEY_LEFT:
-                if (ccol > 0) {
-                    ccol--;
-                }
-                wmove(filePad, crow, ccol);
-                break;
-            case KEY_RIGHT:
-                if (ccol < tcol) {
-                    ccol++;
-                }
-                wmove(filePad, crow, ccol);
-                break;
-        }
-        prefresh(filePad, ppos, 0, 2, 1, trow-3, tcol-2);
+    updateText();
+    prefresh(filePad, ppos, 0, 2, 1, trow-3, tcol-2);
+    // main program loop
+    while (!doExit) {
+    	updateText();
+    	int ch = wgetch(filePad);
+    	input(ch);
     }
 
     quit();
@@ -110,6 +75,62 @@ void init_ncurses() {
     wrefresh(text_border);
     delwin(text_border); // deallocate
     endwin();
+}
+
+void updateText() {
+    cont = ed.getBuffer();
+    lines = cont->text.size()-1;
+
+    for (int i = 0; i < lines; i++) {
+        mvwprintw(filePad, i, 0, cont->text[i].c_str());
+    }
+    wmove(filePad, crow, ccol);
+    prefresh(filePad, ppos, 0, 2, 1, trow-3, tcol-2);
+}
+
+void input(int ch) {
+    switch(ch) {
+    	case KEY_F(2):
+    		doExit = true;
+    		break;
+        case KEY_UP:
+            if (crow > 0) {
+                if (crow == ppos) {
+                    ppos--;
+                }
+                crow--;
+                if (ccol >= cont->text[crow].length()) {
+                    ccol = cont->text[crow].length();
+                }
+            }
+            wmove(filePad, crow, ccol);
+            break;
+        case KEY_DOWN:
+            if (crow < lines-1) {
+                if (crow == ppos+psize) {
+                    ppos++;
+                }
+                crow++;
+                if (ccol >= cont->text[crow].length()) {
+                    ccol = cont->text[crow].length();
+                }
+            }
+            wmove(filePad, crow, ccol);
+            break;
+        case KEY_LEFT:
+            if (ccol > 0) {
+                ccol--;
+            }
+            wmove(filePad, crow, ccol);
+            break;
+        case KEY_RIGHT:
+            if ((ccol < tcol) && (ccol < cont->text[crow].length())) {
+                ccol++;
+            }
+            wmove(filePad, crow, ccol);
+            break;
+    }
+    prefresh(filePad, ppos, 0, 2, 1, trow-3, tcol-2);
 }
 
 static void quit() {
