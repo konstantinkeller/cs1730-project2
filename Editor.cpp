@@ -1,6 +1,6 @@
 #include "Editor.h"
-#include <unistd.h>
-#include <fcntl.h>
+#include <fstream>
+#include <iostream>
 
 using namespace std;
 
@@ -8,23 +8,25 @@ using namespace std;
  * Editor constructor for new file
  */
 Editor::Editor() {
-    Editor::contents = "";
-} 
+    fname = "*NEW FILE*";
+    
+    contents = new Buffer();
+}
 
 /**
  * Editor constructor for existing file
  */
 Editor::Editor(char * file) {
-    const int BUFF_SIZE = 1024;
-    char buffer [BUFF_SIZE];
-    int n;
+    fname = file;
 
-    Editor::fname = file;
+    contents = new Buffer();
 
-    if ((Editor::fd = open(file, O_RDWR)) != -1) { // attempts to open file
-        n = 0;
-        while ((n = read(Editor::fd, buffer, BUFF_SIZE)) > 0) {
-            Editor::contents += buffer; // appends buffer contents to file content string
+    ifstream f(file);
+    if (f.is_open()) { // if file is open
+        while (!f.eof()) {
+            string line;
+            getline(f, line);
+            contents->addLine(line);
         }
     } else {
         exit(EXIT_FAILURE);
@@ -32,22 +34,15 @@ Editor::Editor(char * file) {
 }
 
 /**
- * Returns string variable containing file contents
+ * Returns pointer to  buffer
  */
-string Editor::getContents() {
-    string contents = Editor::contents;
+Buffer * Editor::getBuffer() {
     return contents;
 }
 
 /**
- * Returns number of lines in open file
+ * Returns name of file currently open
  */
-int Editor::countLines() {
-    int lines = 0;
-    size_t pos = Editor::contents.find("\n", 0);
-    while (pos != string::npos) {
-        lines++;
-        pos = Editor::contents.find("\n", pos+1);
-    }
-    return lines;
+string Editor::getFilename() {
+    return fname;
 }

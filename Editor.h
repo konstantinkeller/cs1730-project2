@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include "Buffer.h"
 
 #ifndef EDITOR_H
 #define EDITOR_H
@@ -7,15 +8,14 @@
 using std::string;
 
 class Editor {
-    char * fname;
-    string contents;
-    int fd;
+    string fname;
+    Buffer * contents;
 
     public: 
         Editor();
         Editor(char * file);
-        string getContents();
-        int countLines();
+        Buffer * getBuffer();
+        string getFilename();
 };
 
 #endif

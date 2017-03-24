@@ -1,4 +1,5 @@
 #include "Editor.h"
+#include "Buffer.h"
 #include <ncurses.h>
 
 using namespace std;
@@ -12,24 +13,26 @@ int crow, ccol; // coordinates of cursor
 int lines; // lines in file
 int ppos; // pad position
 int psize;
-string cont; // file contents
+Editor ed;
+Buffer * cont; // file contents
 WINDOW * filePad; // file content pad
 
 // TODO: argument/error handling
 int main(const int argc, char * argv[]) {
-    Editor ed;
     if (argc > 1) {
         fname = argv[1];
         ed = Editor(fname); // new editor object using existing file
     } else {
-        ed = Editor();
+        ed = Editor(); // new editor object using new file
     }
-    cont = ed.getContents(); // fills content string with file contents
-    lines = ed.countLines();
+    cont = ed.getBuffer(); // fills content string with file contents
+    lines = cont->text.size()-1; // gets size of lines buffer
 
     init_ncurses();
 
-    wprintw(filePad, cont.c_str()); // prints file contents in pad
+    for (int i = 0; i < lines; i++) {
+        mvwprintw(filePad, i, 0, cont->text[i].c_str());
+    }
     wmove(filePad, 0, 0);
 
     ppos = 0;
@@ -90,11 +93,8 @@ void init_ncurses() {
 
     mvaddstr(0, 0, "F1: MENU  F2: QUIT");
     mvaddstr(0, (tcol-strlen(header))/2, header);
-    if (fname) {
-        mvaddstr(trow-1, 0, fname);
-    } else {
-        mvaddstr(trow-1, 0, "*NEW FILE*");
-    }
+    const char * filename = ed.getFilename().c_str(); // convert filename string to const char *
+    mvaddstr(trow-1, 0, filename);
 
 
     filePad = newpad(10000, tcol-2);
