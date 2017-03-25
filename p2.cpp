@@ -35,7 +35,6 @@ int main(const int argc, char * argv[]) {
     crow = 0;
     ccol = 0;
     updateText();
-    prefresh(filePad, ppos, 0, 2, 1, trow-3, tcol-2);
     // main program loop
     while (!doExit) {
     	updateText();
@@ -74,7 +73,6 @@ void init_ncurses() {
     box(text_border, 0, 0); // window border
     wrefresh(text_border);
     delwin(text_border); // deallocate
-    endwin();
 }
 
 void updateText() {
@@ -82,6 +80,12 @@ void updateText() {
     lines = cont->text.size()-1;
 
     for (int i = 0; i < lines; i++) {
+        if (i == lines-1) {
+            wmove(filePad, i+1, 0);
+            wclrtoeol(filePad);
+        }
+        wmove(filePad, i, 0);
+        wclrtoeol(filePad);
         mvwprintw(filePad, i, 0, cont->text[i].c_str());
     }
     wmove(filePad, crow, ccol);
@@ -103,7 +107,6 @@ void input(int ch) {
                     ccol = cont->text[crow].length();
                 }
             }
-            wmove(filePad, crow, ccol);
             break;
         case KEY_DOWN:
             if (crow < lines-1) {
@@ -115,22 +118,54 @@ void input(int ch) {
                     ccol = cont->text[crow].length();
                 }
             }
-            wmove(filePad, crow, ccol);
             break;
         case KEY_LEFT:
             if (ccol > 0) {
                 ccol--;
             }
-            wmove(filePad, crow, ccol);
             break;
         case KEY_RIGHT:
             if ((ccol < tcol) && (ccol < cont->text[crow].length())) {
                 ccol++;
             }
-            wmove(filePad, crow, ccol);
+            break;
+        case 127:
+        case KEY_BACKSPACE: // Backspace
+            if (crow > 0 && ccol == 0) { // if at beginning of line
+                ccol = cont->text[crow-1].length(); // set cursor position to end of previous line
+                cont->text[crow-1] += cont->text[crow]; // move line up
+                cont->delLine(crow); // delete line
+                crow--; // move cursor one row up
+            } else if (crow > 0 || ccol > 0) {
+                ccol--; // move cursor one character to left
+                cont->text[crow].erase(ccol, 1); // delete character
+            }
+            break;
+        case KEY_DC: // Delete
+            if (crow < lines-1 && ccol == cont->text[crow].length()) {
+                cont->text[crow] += cont->text[crow+1];
+                cont->delLine(crow+1);
+            } else if (!(crow == lines && ccol == cont->text[crow].length())) {
+                cont->text[crow].erase(ccol, 1);
+            }
+            break;
+        case 10:
+        case KEY_ENTER: // Enter
+            if (ccol < cont->text[crow].length()) {
+                string substring = cont->text[crow].substr(ccol, cont->text[crow].length()-ccol);
+                cont->text[crow].erase(ccol, cont->text[crow].length()-ccol);
+                cont->insLine(substring, crow+1);
+            } else {
+                cont->insLine("", crow+1);
+            }
+            ccol = 0;
+            crow++;
+            break;
+        case 9: // Tab
+            cont->text[crow].insert(ccol, "    "); // insert 4 spaces
+            ccol = ccol+4;
             break;
     }
-    prefresh(filePad, ppos, 0, 2, 1, trow-3, tcol-2);
 }
 
 static void quit() {
