@@ -7,6 +7,7 @@ using namespace std;
 void init_ncurses();
 void updateText();
 void input(int);
+void showMenu();
 static void quit();
 
 char * fname;
@@ -19,6 +20,7 @@ bool doExit = false;
 Editor ed;
 Buffer * cont;
 WINDOW * filePad; // file content pad
+WINDOW * menu;
 
 // TODO: argument/error handling
 int main(const int argc, char * argv[]) {
@@ -55,7 +57,7 @@ void init_ncurses() {
 
     getmaxyx(stdscr, trow, tcol);
 
-    mvaddstr(0, 0, "F1: MENU  F2: QUIT");
+    mvaddstr(0, 0, "F1: MENU");
     mvaddstr(0, (tcol-strlen(header))/2, header);
     const char * filename = ed.getFilename().c_str(); // convert filename string to const char *
     mvaddstr(trow-1, 0, filename);
@@ -73,6 +75,11 @@ void init_ncurses() {
     box(text_border, 0, 0); // window border
     wrefresh(text_border);
     delwin(text_border); // deallocate
+
+    menu = newwin(10, 40, 4, 4);
+    box(menu, 0, 0);
+    mvwhline(menu, 2, 1, 0, 38);
+    
 }
 
 void updateText() {
@@ -86,6 +93,7 @@ void updateText() {
         }
         wmove(filePad, i, 0);
         wclrtoeol(filePad);
+    curs_set(0);
         mvwprintw(filePad, i, 0, cont->text[i].c_str());
     }
     wmove(filePad, crow, ccol);
@@ -94,9 +102,9 @@ void updateText() {
 
 void input(int ch) {
     switch(ch) {
-    	case KEY_F(2):
-    		doExit = true;
-    		break;
+        case KEY_F(1):
+            showMenu();
+            break;
         case KEY_UP:
             if (crow > 0) {
                 if (crow == ppos) {
@@ -166,6 +174,66 @@ void input(int ch) {
             ccol = ccol+4;
             break;
     }
+}
+
+void showMenu() {
+    int choice;
+    int highlight = 0;
+    string choices[4] = {"Open", "Save", "Save As", "Exit"};
+
+    menu = newwin(10, 40, (trow-10)/2, (tcol-40)/2);
+    box(menu, 0, 0);
+    mvwhline(menu, 2, 1, 0, 38);
+    touchwin(menu);
+    curs_set(0);
+    refresh();
+    mvwaddstr(menu, 1, 7, "Menu");
+    keypad(menu, true);
+    wrefresh(menu);
+
+
+    while (true) {
+        for (int i = 0; i < 4; i++) {
+            if (i == highlight) wattron(menu, A_REVERSE);
+            mvwprintw(menu, i+3, 1, choices[i].c_str());
+            wattroff(menu, A_REVERSE);
+        }
+        choice = wgetch(menu);
+
+        switch (choice) {
+            case KEY_UP:
+                if (highlight > 0) {
+                    highlight--;
+                }
+                break;
+            case KEY_DOWN:
+                if (highlight < 4) {
+                    highlight++;
+                }
+                break;
+            default:
+                break;
+        }
+
+        if (choice == 10) {
+            break;
+        }
+    }
+
+    switch (highlight) {
+        case 0: // Open
+            break;
+        case 1: // Save
+            break;
+        case 2: // Save As
+            break;
+        case 3: // Quit
+            doExit = true;
+            break;
+    }
+
+    delwin(menu);
+    curs_set(1);
 }
 
 static void quit() {
