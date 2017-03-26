@@ -19,6 +19,7 @@ class Buffer {
         void delLine(int);
 
         string replaceTabs(string);
+        string replaceSpaces(string);
 };
 
 #endif

@@ -19,8 +19,24 @@ string Buffer::replaceTabs(string line) {
             break;
         }
     }
+
    return line;
 } 
+
+string Buffer::replaceSpaces(string line) {
+    int i;
+
+    while (true) {
+        i = line.find("    ");
+        if (i != line.npos) {
+            line.replace(i, 4, "\t");
+        } else {
+            break;
+        }
+    }
+
+    return line;
+}
 
 /**
  * Adds line to the end of the buffer vector

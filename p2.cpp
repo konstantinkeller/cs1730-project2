@@ -76,10 +76,7 @@ void init_ncurses() {
     wrefresh(text_border);
     delwin(text_border); // deallocate
 
-    menu = newwin(10, 40, 4, 4);
-    box(menu, 0, 0);
-    mvwhline(menu, 2, 1, 0, 38);
-    
+    curs_set(1);
 }
 
 void updateText() {
@@ -93,7 +90,6 @@ void updateText() {
         }
         wmove(filePad, i, 0);
         wclrtoeol(filePad);
-    curs_set(0);
         mvwprintw(filePad, i, 0, cont->text[i].c_str());
     }
     wmove(filePad, crow, ccol);
@@ -170,8 +166,8 @@ void input(int ch) {
             crow++;
             break;
         case 9: // Tab
-            cont->text[crow].insert(ccol, "    "); // insert 4 spaces
-            ccol = ccol+4;
+            cont->text[crow].insert(ccol, "\t"); // insert 4 spaces
+            ccol = ccol+8;
             break;
     }
 }
@@ -224,6 +220,7 @@ void showMenu() {
         case 0: // Open
             break;
         case 1: // Save
+            ed.saveFile();
             break;
         case 2: // Save As
             break;

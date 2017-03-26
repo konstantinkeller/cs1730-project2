@@ -46,3 +46,35 @@ Buffer * Editor::getBuffer() {
 string Editor::getFilename() {
     return fname;
 }
+
+bool Editor::saveFile() {
+    bool result;
+    ofstream f(fname);
+
+    if (f.is_open()) {
+        for (int i = 0; i < contents->text.size(); i++) {
+            f << contents->replaceSpaces(contents->text[i]) << endl;
+        }
+        result = true;
+    } else {
+        result = false;
+    }
+
+    return result;
+}
+
+bool Editor::saveFileAs(string filename) {
+    bool result;
+    ofstream f(filename);
+
+    if (f.is_open()) {
+        for (int i = 0; i < contents->text.size(); i++) {
+            f << contents->replaceSpaces(contents->text[i]) << endl;
+        }
+        result = true;
+    } else {
+        result = false;
+    }
+
+    return result;
+}

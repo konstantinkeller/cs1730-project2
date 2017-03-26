@@ -21,3 +21,7 @@ p2.o: p2.cpp
 clean:
 	rm -rf *.o
 	rm -rf p2
+
+
+
+

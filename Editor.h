@@ -16,6 +16,10 @@ class Editor {
         Editor(char * file);
         Buffer * getBuffer();
         string getFilename();
+
+        bool saveFile();
+        bool saveFileAs(string filename);
+        bool openFile();
 };
 
 #endif
