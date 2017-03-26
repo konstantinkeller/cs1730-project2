@@ -221,8 +221,9 @@ void showMenu() {
         case 0: // Open
             mvwprintw(menu,8,2,"Enter file name: ");
             wgetstr(menu,str);
-            wrefresh(menu);
             ed.openFile(str);
+            mvaddstr(trow-1, 0, str);
+            refresh();
             break;
         case 1: // Save
             ed.saveFile();
@@ -230,8 +231,9 @@ void showMenu() {
         case 2: // Save As
             mvwprintw(menu,8,2,"Save file as: ")
             wgetstr(menu,str);
-            wrefresh(menu);
             ed.saveFileAs(str);
+            mvaddstr(trow-1, 0, str);
+            refresh();
             break;
         case 3: // Quit
             doExit = true;
