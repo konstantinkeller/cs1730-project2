@@ -18,8 +18,8 @@ class Editor {
         string getFilename();
 
         bool saveFile();
-        bool saveFileAs(string filename);
-        bool openFile();
+        bool saveFileAs(char * filename);
+        bool openFile(char * filename); // I changed these from string to char * but both worked
 };
 
 #endif
