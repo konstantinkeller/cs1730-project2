@@ -47,6 +47,27 @@ string Editor::getFilename() {
     return fname;
 }
 
+bool Editor::openFile(char * filename) {
+  fname = filename;
+  bool result;
+  ifstream f(fname);
+  contents = new Buffer();
+
+  if (f.is_open()) {
+    while(!f.eof()) {
+      string line;
+      getline(f, line);
+      contents->addLine(line);
+      result = true;
+    }
+  } else {
+    result = false;
+    exit(EXIT_FAILURE);
+  }
+  return result;
+
+}
+
 bool Editor::saveFile() {
     bool result;
     ofstream f(fname);
@@ -63,7 +84,7 @@ bool Editor::saveFile() {
     return result;
 }
 
-bool Editor::saveFileAs(string filename) {
+bool Editor::saveFileAs(char * filename) {
     bool result;
     ofstream f(filename);
 
