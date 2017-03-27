@@ -165,8 +165,8 @@ void input(int ch) {
 			crow++;
 			break;
 		case 9: // Tab
-			cont->text[crow].insert(ccol, "\t"); // insert 4 spaces
-			ccol = ccol+8;
+			cont->text[crow].insert(ccol, 4, ' '); // insert 4 spaces
+			ccol = ccol+4;
 			break;
         default:
             cont->text[crow].insert(ccol, 1, (char)ch);
