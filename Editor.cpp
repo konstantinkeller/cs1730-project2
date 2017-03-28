@@ -9,8 +9,9 @@ using namespace std;
  */
 Editor::Editor() {
     fname = "*NEW FILE*";
-    
     contents = new Buffer();
+    string line;
+    contents->addLine(line);
 }
 
 /**
