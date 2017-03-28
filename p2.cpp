@@ -221,53 +221,70 @@ void showMenu() {
 	}
 
 	switch (highlight) {
-		char str[80];
-		case 0: // Open
-			mvwprintw(menu,8,2,"Enter file name: "); 
-			wgetstr(menu,str);
-		if (ed.if_file_exist(str) == true) {
-			ed.openFile(str);
-			mvaddstr(trow-1, 0, str);
-			refresh();
-		} else {
-			while (ed.if_file_exist(str) == false) {
-				mvprintw(menu,7,2,"File not found. Enter filename:                "); //
-				mvwgetstr(menu,7,33,str); //these dimensions suck, im fixing it 
-				wrefresh(menu);
-				ed.openFile(str);
-			}
-			mvaddstr(trow-1,0,str);
-			refresh();
-		}
-			break;
+	char str[80];
+    	char yn[80];
+  		case 0: // Open(mostly done!)
+    	mvwprintw(menu,7,2 ,"Enter file name: ");
+    	wgetstr(menu,str);
+    if (ed.if_file_exist(str) == true){
+      	mvwprintw(menu,7,2,"Save changes?");
+      	wgetstr(menu,yn);
+    if (strcmp(yn,"yes") == 0) {
+        ed.saveFile();
+    	ed.openFile(str);
+      } else if (strcmp(yn,"no") == 0) {
+        ed.openFile(str);
+      }
+    mvaddstr(trow-1,0,str);
+    refresh();
+    } else {
+      while(ed.if_file_exist(str) == false) {
+      mvwprintw(menu,7,2,"File not found. Enter filename: ");
+      wgetstr(menu,str);
+      wrefresh(menu);
+      ed.openFile(str);
+      }
+      mvaddstr(trow-1,0,str);
+      refresh();
+    }
+    break;
+
 		case 1: // Save
 			ed.saveFile();
 			break;
-		case 2: // Save As 
-			mvwprintw(menu,8,2,"Save file as: ");
-			wgetstr(menu,str);
-		if (ed.if_file_exist(str) == false) {
-			ed.saveFileAs(str);
-		} else {
-			while (ed.if_file_exist(str) == true) {
-			mvwprintw(menu,7, 2, "File already exists. Overwrite?"); 
-			wgetstr(menu,yn);
-			if (yn == "yes") {
-				ed.saveFileAs(str)
-			}
-			break;
-		}
-			mvaddstr(trow-1, 0, str);
-			refresh();
-		}
-			break;
+		case 2: // Save As
+    	mvwprintw(menu,7,2 , "Enter file name: ");
+    	wgetstr(menu,str);
+    if (ed.if_file_exist(str) == false) {
+     	 ed.saveFileAs(str);
+      	 mvaddstr(trow-1,0,str);
+    } else {
+      while(ed.if_file_exist(str) == true) {
+        mvwprintw(menu,7,2,"File already exists.Overwrite?");
+        wgetstr(menu,yn);
+        if (strcmp(yn,"yes") == 0) {
+          ed.saveFileAs(str);
+          mvaddstr(trow-1,0,str);
+          break;
+        } else if (strcmp(yn,"no") == 0) {
+          break;
+        }
+      }
+    }
+    break;
 		case 3: // Quit
-			doExit = true;
-			break;
-	}
-
-	delwin(menu);
-	curs_set(1);
+    mvwprintw(menu,7,2,"Save changes?");
+    wgetstr(menu,yn);
+    if (strcmp(yn,"yes") == 0) {
+      ed.saveFile();
+      doExit = true;
+    } else if (strcmp(yn,"no") == 0) {
+    doExit = true;
+    }
+      break;
+  }
+delwin(menu);
+curs_set(1);
 }
 
 static void quit() {
