@@ -223,7 +223,7 @@ void showMenu() {
 	switch (highlight) {
 	char str[80];
     	char yn[80];
-  		case 0: // Open(mostly done!)
+  		case 0: // Open
     	mvwprintw(menu,7,2 ,"Enter file name: ");
     	wgetstr(menu,str);
     if (ed.if_file_exist(str) == true){
