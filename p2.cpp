@@ -246,9 +246,12 @@ void showMenu() {
       wrefresh(menu);
       ed.openFile(str);
       }
+	move(trow-1,1);
+	    clrtoeol();
       mvaddstr(trow-1,0,str);
       refresh();
     }
+wrefresh(filePad);
     break;
 
 		case 1: // Save
@@ -266,6 +269,8 @@ void showMenu() {
         wgetstr(menu,yn);
         if (strcmp(yn,"yes") == 0) {
           ed.saveFileAs(str);
+	  move(trow-1,1);
+	  clrtoeol();
           mvaddstr(trow-1,0,str);
           break;
         } else if (strcmp(yn,"no") == 0) {
@@ -293,4 +298,3 @@ static void quit() {
 	endwin();
 	exit(0);
 }
-
