@@ -1,5 +1,6 @@
 #include "Editor.h"
 #include "Buffer.h"
+#include <string.h>
 #include <ncurses.h>
 
 using namespace std;
@@ -11,11 +12,11 @@ void showMenu();
 static void quit();
 
 char * fname;
-int trow, tcol; // rows and cols in screen
-int crow, ccol; // coordinates of cursor
-int ppos; // pad position
-int psize;
-int lines;
+uint trow, tcol; // rows and cols in screen
+uint crow, ccol; // coordinates of cursor
+uint ppos; // pad position
+uint psize;
+uint lines;
 bool doExit = false;
 Editor ed;
 Buffer * cont;
@@ -82,7 +83,7 @@ void updateText() {
 	cont = ed.getBuffer();
 	lines = cont->text.size()-1;
 
-	for (int i = 0; i < lines; i++) {
+	for (uint i = 0; i < lines; i++) {
 		if (i == lines-1) {
 			wmove(filePad, i+1, 0);
 			wclrtoeol(filePad);
@@ -221,61 +222,61 @@ void showMenu() {
 	}
 
 	switch (highlight) {
-	char str[80];
+	    char str[80];
     	char yn[80];
   		case 0: // Open
     	mvwprintw(menu,7,2 ,"Enter file name: ");
     	wgetstr(menu,str);
-    if (ed.if_file_exist(str) == true){
-      	mvwprintw(menu,7,2,"Save changes?");
-      	wgetstr(menu,yn);
-    if (strcmp(yn,"yes") == 0) {
-        ed.saveFile();
-    	ed.openFile(str);
-      } else if (strcmp(yn,"no") == 0) {
-        ed.openFile(str);
-      }
-    mvaddstr(trow-1,0,str);
-    refresh();
-    } else {
-      while(ed.if_file_exist(str) == false) {
-      mvwprintw(menu,7,2,"File not found. Enter filename: ");
-      wgetstr(menu,str);
-	      wmove(menu,7,0);
-	      wclrtoeol(menu);
-      wrefresh(menu);
-      ed.openFile(str);
-      }
-	move(trow-1,1);
-	    clrtoeol();
-      mvaddstr(trow-1,0,str);
-      refresh();
-    }
-curs_set(1);
-    break;
+        if (ed.if_file_exist(str) == true){
+          	mvwprintw(menu,7,2,"Save changes?");
+      	    wgetstr(menu,yn);
+            if (strcmp(yn,"yes") == 0) {
+                ed.saveFile();
+    	        ed.openFile(str);
+            } else if (strcmp(yn,"no") == 0) {
+                ed.openFile(str);
+            }
+            mvaddstr(trow-1,0,str);
+            refresh();
+            } else {
+                while(ed.if_file_exist(str) == false) {
+                    mvwprintw(menu,7,2,"File not found. Enter filename: ");
+                    wgetstr(menu,str);
+	                wmove(menu,7,0);
+                    wclrtoeol(menu);
+                    wrefresh(menu);
+                    ed.openFile(str);
+                }
+	            move(trow-1,1);
+	            clrtoeol();
+                mvaddstr(trow-1,0,str);
+                refresh();
+            }
+            curs_set(1);
+            break;
 
 		case 1: // Save
 			ed.saveFile();
 			curs_set(1);
 			break;
 		case 2: // Save As
-    	mvwprintw(menu,7,2 , "Enter file name: ");
-    	wgetstr(menu,str);
-    if (ed.if_file_exist(str) == false) {
+    	    mvwprintw(menu,7,2 , "Enter file name: ");
+    	    wgetstr(menu,str);
+            if (ed.if_file_exist(str) == false) {
      	 ed.saveFileAs(str);
       	 mvaddstr(trow-1,0,str);
     } else {
       while(ed.if_file_exist(str) == true) {
-        mvwprintw(menu,7,2,"File already exists.Overwrite?");
+        mvwprintw(menu,7,2,"File already exists.Overwrite? ");
         wgetstr(menu,yn);
         if (strcmp(yn,"yes") == 0) {
-          ed.saveFileAs(str);
-	  move(trow-1,1);
-	  clrtoeol();
-          mvaddstr(trow-1,0,str);
-          break;
+            ed.saveFileAs(str);
+            move(trow-1,1);
+	        clrtoeol();
+            mvaddstr(trow-1,0,str);
+            break;
         } else if (strcmp(yn,"no") == 0) {
-          break;
+            break;
         }
       }
     }

@@ -9,7 +9,7 @@ Buffer::Buffer() {}
  * Returns string containing line with all tabs replaced by four spaces
  */
 string Buffer::replaceTabs(string line) {
-    int i;
+    size_t i;
     // loop through all tab characters
     while (true) {
         i = line.find("\t");
@@ -24,7 +24,7 @@ string Buffer::replaceTabs(string line) {
 } 
 
 string Buffer::replaceSpaces(string line) {
-    int i;
+    size_t i;
 
     while (true) {
         i = line.find("    ");

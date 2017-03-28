@@ -74,7 +74,7 @@ bool Editor::saveFile() {
     ofstream f(fname);
 
     if (f.is_open()) {
-        for (int i = 0; i < contents->text.size()-1; i++) {
+        for (uint i = 0; i < contents->text.size()-1; i++) {
             f << contents->replaceSpaces(contents->text[i]) << endl;
         }
         result = true;
@@ -90,7 +90,7 @@ bool Editor::saveFileAs(char * filename) {
     ofstream f(filename);
 
     if (f.is_open()) {
-        for (int i = 0; i < contents->text.size()-1; i++) {
+        for (uint i = 0; i < contents->text.size()-1; i++) {
             f << contents->replaceSpaces(contents->text[i]) << endl;
         }
         result = true;
