@@ -251,11 +251,12 @@ void showMenu() {
       mvaddstr(trow-1,0,str);
       refresh();
     }
-wrefresh(filePad);
+curs_set(1);
     break;
 
 		case 1: // Save
 			ed.saveFile();
+			curs_set(1);
 			break;
 		case 2: // Save As
     	mvwprintw(menu,7,2 , "Enter file name: ");
@@ -278,6 +279,7 @@ wrefresh(filePad);
         }
       }
     }
+	curs_set(1);
     break;
 		case 3: // Quit
     mvwprintw(menu,7,2,"Save changes?");
