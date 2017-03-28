@@ -241,6 +241,8 @@ void showMenu() {
       while(ed.if_file_exist(str) == false) {
       mvwprintw(menu,7,2,"File not found. Enter filename: ");
       wgetstr(menu,str);
+	      wmove(menu,7,0);
+	      wclrtoeol(menu);
       wrefresh(menu);
       ed.openFile(str);
       }
