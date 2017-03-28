@@ -20,6 +20,7 @@ class Editor {
         bool saveFile();
         bool saveFileAs(char * filename);
         bool openFile(char * filename); // I changed these from string to char * but both worked
+        bool if_file_exist(char * filename);
 };
 
 #endif
