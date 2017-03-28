@@ -182,6 +182,7 @@ void showMenu() {
 
 	menu = newwin(10, 40, (trow-10)/2, (tcol-40)/2);
 	box(menu, 0, 0);
+	echo();
 	mvwhline(menu, 2, 1, 0, 38);
 	touchwin(menu);
 	curs_set(0);
@@ -222,23 +223,43 @@ void showMenu() {
 	switch (highlight) {
 		char str[80];
 		case 0: // Open
-			mvwprintw(menu,8,2,"Enter file name: ");
-            echo();
+			mvwprintw(menu,8,2,"Enter file name: "); 
 			wgetstr(menu,str);
-            noecho();
+		if (ed.if_file_exist(str) == true) {
 			ed.openFile(str);
 			mvaddstr(trow-1, 0, str);
 			refresh();
+		} else {
+			while (ed.if_file_exist(str) == false) {
+				mvprintw(menu,7,2,"File not found. Enter filename:                "); //
+				mvwgetstr(menu,7,33,str); //these dimensions suck, im fixing it 
+				wrefresh(menu);
+				ed.openFile(str);
+			}
+			mvaddstr(trow-1,0,str);
+			refresh();
+		}
 			break;
 		case 1: // Save
 			ed.saveFile();
 			break;
-		case 2: // Save As
+		case 2: // Save As 
 			mvwprintw(menu,8,2,"Save file as: ");
 			wgetstr(menu,str);
+		if (ed.if_file_exist(str) == false) {
 			ed.saveFileAs(str);
+		} else {
+			while (ed.if_file_exist(str) == true) {
+			mvwprintw(menu,7, 2, "File already exists. Overwrite?"); 
+			wgetstr(menu,yn);
+			if (yn == "yes") {
+				ed.saveFileAs(str)
+			}
+			break;
+		}
 			mvaddstr(trow-1, 0, str);
 			refresh();
+		}
 			break;
 		case 3: // Quit
 			doExit = true;
