@@ -99,3 +99,8 @@ bool Editor::saveFileAs(char * filename) {
 
     return result;
 }
+
+bool Editor::if_file_exist(char * filename)  {
+    ifstream f(filename);
+    return f.good();
+}
