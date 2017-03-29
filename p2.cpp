@@ -100,40 +100,40 @@ void updateText() {
 void input(int ch) {
     switch(ch) {
         case KEY_F(1):
-        showMenu();
-        break;
+            showMenu();
+            break;
         case KEY_UP:
-        if (crow > 0) {
-            if (crow == ppos) {
-                ppos--;
+            if (crow > 0) {
+                if (crow == ppos) {
+                    ppos--;
+                }
+                crow--;
+                if (ccol >= cont->text[crow].length()) {
+                    ccol = cont->text[crow].length();
+                }   
             }
-            crow--;
-            if (ccol >= cont->text[crow].length()) {
-                ccol = cont->text[crow].length();
-            }
-        }
-        break;
+            break;
         case KEY_DOWN:
-        if (crow < lines-1) {
-            if (crow == ppos+psize) {
-                ppos++;
+            if (crow < lines-1) {
+                if (crow == ppos+psize) {
+                    ppos++;
+                }
+                crow++;
+                if (ccol >= cont->text[crow].length()) {
+                    ccol = cont->text[crow].length();
+                }
             }
-            crow++;
-            if (ccol >= cont->text[crow].length()) {
-                ccol = cont->text[crow].length();
-            }
-        }
-        break;
+            break;
         case KEY_LEFT:
-        if (ccol > 0) {
-            ccol--;
-        }
-        break;
+            if (ccol > 0) {
+                ccol--;
+            }
+            break;
         case KEY_RIGHT:
-        if ((ccol < tcol) && (ccol < cont->text[crow].length())) {
-            ccol++;
-        }
-        break;
+            if ((ccol < tcol) && (ccol < cont->text[crow].length())) {
+                ccol++;
+            }
+            break;
         case 127:
         case KEY_BACKSPACE: // Backspace
             if (crow > 0 && ccol == 0) { // if at beginning of line
@@ -147,30 +147,30 @@ void input(int ch) {
             }
             break;
         case KEY_DC: // Delete
-        if (crow < lines-1 && ccol == cont->text[crow].length()) {
-            cont->text[crow] += cont->text[crow+1];
-            cont->delLine(crow+1);
-        } else if (!(crow == lines && ccol == cont->text[crow].length())) {
-            cont->text[crow].erase(ccol, 1);
-        }
-        break;
+            if (crow < lines-1 && ccol == cont->text[crow].length()) {
+                cont->text[crow] += cont->text[crow+1];
+                cont->delLine(crow+1);
+            } else if (!(crow == lines && ccol == cont->text[crow].length())) {
+                cont->text[crow].erase(ccol, 1);
+            }
+            break;
         case 10:
         case KEY_ENTER: // Enter
-        if (ccol < cont->text[crow].length()) {
-            string substring = cont->text[crow].substr(ccol, cont->text[crow].length()-ccol);
-            cont->text[crow].erase(ccol, cont->text[crow].length()-ccol);
-            cont->insLine(substring, crow+1);
-        } else {
-            cont->insLine("", crow+1);
-        }
-        ccol = 0;
-        crow++;
-        break;
+            if (ccol < cont->text[crow].length()) {
+                string substring = cont->text[crow].substr(ccol, cont->text[crow].length()-ccol);
+                cont->text[crow].erase(ccol, cont->text[crow].length()-ccol);
+                cont->insLine(substring, crow+1);
+            } else {
+                cont->insLine("", crow+1);
+            }
+            ccol = 0;
+            crow++;
+            break;
         case 9: // Tab
             cont->text[crow].insert(ccol, 4, ' '); // insert 4 spaces
             ccol = ccol+4;
             break;
-            default:
+        default:
             cont->text[crow].insert(ccol, 1, (char)ch);
             ccol++;
             break;
@@ -203,17 +203,17 @@ void input(int ch) {
 
             switch (choice) {
                 case KEY_UP:
-                if (highlight > 0) {
-                    highlight--;
-                }
-                break;
+                    if (highlight > 0) {
+                        highlight--;
+                    }
+                    break;
                 case KEY_DOWN:
-                if (highlight < 4) {
-                    highlight++;
-                }
-                break;
+                    if (highlight < 4) {
+                        highlight++;
+                    }
+                    break;
                 default:
-                break;
+                    break;
             }
 
             if (choice == 10) {
