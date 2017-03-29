@@ -29,7 +29,7 @@ int main(const int argc, char * argv[]) {
 		fname = argv[1];
 		ed = Editor(fname); // new editor object using existing file
 	} else {
-		ed = Editor(); // new editor object using new file
+		cout << "Please specify a file name following the executable" << endl; 
 	}
 
 	init_ncurses();
@@ -227,7 +227,9 @@ void showMenu() {
   		case 0: // Open
     	mvwprintw(menu,7,2 ,"Enter file name: ");
     	wgetstr(menu,str);
+	wmove(menu,7,2);
         if (ed.if_file_exist(str) == true){
+		wclrtoeol(menu);
           	mvwprintw(menu,7,2,"Save changes?");
       	    wgetstr(menu,yn);
             if (strcmp(yn,"yes") == 0) {
@@ -236,6 +238,8 @@ void showMenu() {
             } else if (strcmp(yn,"no") == 0) {
                 ed.openFile(str);
             }
+	    move(trow-1,1):
+	    clrtoeol();
             mvaddstr(trow-1,0,str);
             refresh();
             } else {
@@ -264,7 +268,10 @@ void showMenu() {
     	    wgetstr(menu,str);
             if (ed.if_file_exist(str) == false) {
      	 ed.saveFileAs(str);
+	 move(trow-1,1);
+	 clrtoeol();
       	 mvaddstr(trow-1,0,str);
+	 refresh();
     } else {
       while(ed.if_file_exist(str) == true) {
         mvwprintw(menu,7,2,"File already exists.Overwrite? ");
@@ -274,6 +281,7 @@ void showMenu() {
             move(trow-1,1);
 	        clrtoeol();
             mvaddstr(trow-1,0,str);
+		refresh();
             break;
         } else if (strcmp(yn,"no") == 0) {
             break;
@@ -293,8 +301,6 @@ void showMenu() {
     }
       break;
   }
-delwin(menu);
-curs_set(1);
 }
 
 static void quit() {
