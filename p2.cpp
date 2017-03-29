@@ -30,6 +30,7 @@ int main(const int argc, char * argv[]) {
 		ed = Editor(fname); // new editor object using existing file
 	} else {
 		cout << "Please specify a file name following the executable" << endl; 
+		quit();
 	}
 
 	init_ncurses();
