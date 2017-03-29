@@ -59,10 +59,21 @@ void init_ncurses() {
 
     getmaxyx(stdscr, trow, tcol);
 
+    start_color();
+    init_pair(1,COLOR_GREEN,COLOR_BLACK);
+    init_pair(2,COLOR_CYAN,COLOR_BLACK);
+    init_pair(3,COLOR_BLUE,COLOR_BLACK);
+    attrset(COLOR_PAIR(2));
     mvaddstr(0, 0, "F1: MENU");
+    attrset(COLOR_PAIR(1));
     mvaddstr(0, (tcol-strlen(header))/2, header);
     const char * filename = ed.getFilename().c_str(); // convert filename string to const char *
+    attrset(COLOR_PAIR(3) | A_BOLD);
     mvaddstr(trow-1, 0, filename);
+    
+    attroff(COLOR_PAIR(1));
+    attroff(COLOR_PAIR(2));
+    attroff(COLOR_PAIR(3));
 
 
     filePad = newpad(10000, tcol-2);
@@ -241,7 +252,9 @@ void input(int ch) {
             }
             move(trow-1,1);
             clrtoeol();
+            attrset(COLOR_PAIR(3) | A_BOLD);
             mvaddstr(trow-1,0,str);
+            attroff(COLOR_PAIR(3));
             refresh();
         } else {
             while(ed.if_file_exist(str) == false) {
@@ -254,7 +267,9 @@ void input(int ch) {
             }
             move(trow-1,1);
             clrtoeol();
+            attron(COLOR_PAIR(3) | A_BOLD);
             mvaddstr(trow-1,0,str);
+            attroff(COLOR_PAIR(3));
             refresh();
         }
         curs_set(1);
@@ -271,7 +286,9 @@ void input(int ch) {
             ed.saveFileAs(str);
             move(trow-1,1);
             clrtoeol();
+            attron(COLOR_PAIR(3)| A_BOLD);
             mvaddstr(trow-1,0,str);
+            attroff(COLOR_PAIR(3));
             refresh();
         } else {
             while(ed.if_file_exist(str) == true) {
@@ -281,7 +298,9 @@ void input(int ch) {
                     ed.saveFileAs(str);
                     move(trow-1,1);
                     clrtoeol();
+                    attrset(COLOR_PAIR(3) | A_BOLD);
                     mvaddstr(trow-1,0,str);
+                    attroff(COLOR_PAIR(3) | A_BOLD);
                     refresh();
                     break;
                 } else if ((strcmp(yn, "no") == 0) || (strcmp(yn, "n") == 0)) {
