@@ -20,7 +20,7 @@ string Buffer::replaceTabs(string line) {
         }
     }
 
-   return line;
+    return line;
 } 
 
 string Buffer::replaceSpaces(string line) {

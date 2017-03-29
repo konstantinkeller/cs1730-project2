@@ -7,45 +7,45 @@ using namespace std;
 /**
  * Editor constructor for new file
  */
-Editor::Editor() {
-    fname = "*NEW FILE*";
-    contents = new Buffer();
-    string line;
-    contents->addLine(line);
+ Editor::Editor() {
+  fname = "*NEW FILE*";
+  contents = new Buffer();
+  string line;
+  contents->addLine(line);
 }
 
 /**
  * Editor constructor for existing file
  */
-Editor::Editor(char * file) {
-    fname = file;
+ Editor::Editor(char * file) {
+  fname = file;
 
-    contents = new Buffer();
+  contents = new Buffer();
 
-    ifstream f(file);
+  ifstream f(file);
     if (f.is_open()) { // if file is open
-        while (!f.eof()) {
-            string line;
-            getline(f, line);
-            contents->addLine(line);
-        }
+      while (!f.eof()) {
+        string line;
+        getline(f, line);
+        contents->addLine(line);
+      }
     } else {
-        exit(EXIT_FAILURE);
+      exit(EXIT_FAILURE);
     }
-}
+  }
 
 /**
  * Returns pointer to  buffer
  */
-Buffer * Editor::getBuffer() {
-    return contents;
+ Buffer * Editor::getBuffer() {
+  return contents;
 }
 
 /**
  * Returns name of file currently open
  */
-string Editor::getFilename() {
-    return fname;
+ string Editor::getFilename() {
+  return fname;
 }
 
 bool Editor::openFile(char * filename) {
@@ -70,38 +70,38 @@ bool Editor::openFile(char * filename) {
 }
 
 bool Editor::saveFile() {
-    bool result;
-    ofstream f(fname);
+  bool result;
+  ofstream f(fname);
 
-    if (f.is_open()) {
-        for (uint i = 0; i < contents->text.size()-1; i++) {
-            f << contents->replaceSpaces(contents->text[i]) << endl;
-        }
-        result = true;
-    } else {
-        result = false;
+  if (f.is_open()) {
+    for (uint i = 0; i < contents->text.size()-1; i++) {
+      f << contents->replaceSpaces(contents->text[i]) << endl;
     }
+    result = true;
+  } else {
+    result = false;
+  }
 
-    return result;
+  return result;
 }
 
 bool Editor::saveFileAs(char * filename) {
-    bool result;
-    ofstream f(filename);
+  bool result;
+  ofstream f(filename);
 
-    if (f.is_open()) {
-        for (uint i = 0; i < contents->text.size()-1; i++) {
-            f << contents->replaceSpaces(contents->text[i]) << endl;
-        }
-        result = true;
-    } else {
-        result = false;
+  if (f.is_open()) {
+    for (uint i = 0; i < contents->text.size()-1; i++) {
+      f << contents->replaceSpaces(contents->text[i]) << endl;
     }
+    result = true;
+  } else {
+    result = false;
+  }
 
-    return result;
+  return result;
 }
 
 bool Editor::if_file_exist(char * filename)  {
-    ifstream f(filename);
-    return f.good();
+  ifstream f(filename);
+  return f.good();
 }

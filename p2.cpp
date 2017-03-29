@@ -25,8 +25,8 @@ WINDOW * menu;
 
 // TODO: argument/error handling
 int main(const int argc, char * argv[]) {
-	if (argc > 1) {
-		fname = argv[1];
+    if (argc > 1) {
+        fname = argv[1];
 		ed = Editor(fname); // new editor object using existing file
 	} else {
 		cout << "Please specify a file name following the executable" << endl; 
@@ -100,40 +100,40 @@ void updateText() {
 void input(int ch) {
 	switch(ch) {
 		case KEY_F(1):
-			showMenu();
-			break;
+		showMenu();
+		break;
 		case KEY_UP:
-			if (crow > 0) {
-				if (crow == ppos) {
-					ppos--;
-				}
-				crow--;
-				if (ccol >= cont->text[crow].length()) {
-					ccol = cont->text[crow].length();
-				}
+		if (crow > 0) {
+			if (crow == ppos) {
+				ppos--;
 			}
-			break;
+			crow--;
+			if (ccol >= cont->text[crow].length()) {
+				ccol = cont->text[crow].length();
+			}
+		}
+		break;
 		case KEY_DOWN:
-			if (crow < lines-1) {
-				if (crow == ppos+psize) {
-					ppos++;
-				}
-				crow++;
-				if (ccol >= cont->text[crow].length()) {
-					ccol = cont->text[crow].length();
-				}
+		if (crow < lines-1) {
+			if (crow == ppos+psize) {
+				ppos++;
 			}
-			break;
+			crow++;
+			if (ccol >= cont->text[crow].length()) {
+				ccol = cont->text[crow].length();
+			}
+		}
+		break;
 		case KEY_LEFT:
-			if (ccol > 0) {
-				ccol--;
-			}
-			break;
+		if (ccol > 0) {
+			ccol--;
+		}
+		break;
 		case KEY_RIGHT:
-			if ((ccol < tcol) && (ccol < cont->text[crow].length())) {
-				ccol++;
-			}
-			break;
+		if ((ccol < tcol) && (ccol < cont->text[crow].length())) {
+			ccol++;
+		}
+		break;
 		case 127:
 		case KEY_BACKSPACE: // Backspace
 			if (crow > 0 && ccol == 0) { // if at beginning of line
@@ -147,162 +147,162 @@ void input(int ch) {
 			}
 			break;
 		case KEY_DC: // Delete
-			if (crow < lines-1 && ccol == cont->text[crow].length()) {
-				cont->text[crow] += cont->text[crow+1];
-				cont->delLine(crow+1);
-			} else if (!(crow == lines && ccol == cont->text[crow].length())) {
-				cont->text[crow].erase(ccol, 1);
-			}
-			break;
+		if (crow < lines-1 && ccol == cont->text[crow].length()) {
+			cont->text[crow] += cont->text[crow+1];
+			cont->delLine(crow+1);
+		} else if (!(crow == lines && ccol == cont->text[crow].length())) {
+			cont->text[crow].erase(ccol, 1);
+		}
+		break;
 		case 10:
 		case KEY_ENTER: // Enter
-			if (ccol < cont->text[crow].length()) {
-				string substring = cont->text[crow].substr(ccol, cont->text[crow].length()-ccol);
-				cont->text[crow].erase(ccol, cont->text[crow].length()-ccol);
-				cont->insLine(substring, crow+1);
-			} else {
-				cont->insLine("", crow+1);
-			}
-			ccol = 0;
-			crow++;
-			break;
+		if (ccol < cont->text[crow].length()) {
+			string substring = cont->text[crow].substr(ccol, cont->text[crow].length()-ccol);
+			cont->text[crow].erase(ccol, cont->text[crow].length()-ccol);
+			cont->insLine(substring, crow+1);
+		} else {
+			cont->insLine("", crow+1);
+		}
+		ccol = 0;
+		crow++;
+		break;
 		case 9: // Tab
 			cont->text[crow].insert(ccol, 4, ' '); // insert 4 spaces
 			ccol = ccol+4;
 			break;
-        default:
-            cont->text[crow].insert(ccol, 1, (char)ch);
-            ccol++;
-            break;
-	}
-}
-
-void showMenu() {
-	int choice;
-	int highlight = 0;
-	string choices[4] = {"Open", "Save", "Save As", "Exit"};
-
-	menu = newwin(10, 40, (trow-10)/2, (tcol-40)/2);
-	box(menu, 0, 0);
-	mvwhline(menu, 2, 1, 0, 38);
-	touchwin(menu);
-	curs_set(0);
-	refresh();
-	mvwaddstr(menu, 1, 7, "Menu");
-	keypad(menu, true);
-	wrefresh(menu);
-
-
-	while (true) {
-		for (int i = 0; i < 4; i++) {
-			if (i == highlight) wattron(menu, A_REVERSE);
-			mvwprintw(menu, i+3, 1, choices[i].c_str());
-			wattroff(menu, A_REVERSE);
+			default:
+			cont->text[crow].insert(ccol, 1, (char)ch);
+			ccol++;
+			break;
 		}
-		choice = wgetch(menu);
+	}
 
-		switch (choice) {
-			case KEY_UP:
+	void showMenu() {
+		int choice;
+		int highlight = 0;
+		string choices[4] = {"Open", "Save", "Save As", "Exit"};
+
+		menu = newwin(10, 40, (trow-10)/2, (tcol-40)/2);
+		box(menu, 0, 0);
+		mvwhline(menu, 2, 1, 0, 38);
+		touchwin(menu);
+		curs_set(0);
+		refresh();
+		mvwaddstr(menu, 1, 7, "Menu");
+		keypad(menu, true);
+		wrefresh(menu);
+
+
+		while (true) {
+			for (int i = 0; i < 4; i++) {
+				if (i == highlight) wattron(menu, A_REVERSE);
+				mvwprintw(menu, i+3, 1, choices[i].c_str());
+				wattroff(menu, A_REVERSE);
+			}
+			choice = wgetch(menu);
+
+			switch (choice) {
+				case KEY_UP:
 				if (highlight > 0) {
 					highlight--;
 				}
 				break;
-			case KEY_DOWN:
+				case KEY_DOWN:
 				if (highlight < 4) {
 					highlight++;
 				}
 				break;
-			default:
+				default:
 				break;
+			}
+
+			if (choice == 10) {
+				break;
+			}
 		}
 
-		if (choice == 10) {
-			break;
-		}
-	}
-
-    echo();
-	switch (highlight) {
-	    char str[80];
-    	char yn[80];
+		echo();
+		switch (highlight) {
+			char str[80];
+			char yn[80];
   		case 0: // Open
-    	mvwprintw(menu,7,2 ,"Enter file name: ");
-    	wgetstr(menu,str);
-	wmove(menu,7,2);
-        if (ed.if_file_exist(str) == true){
-		wclrtoeol(menu);
-          	mvwprintw(menu,7,2,"Save changes? (y/n): ");
-      	    wgetstr(menu,yn);
-            if ((strcmp(yn,"yes") == 0) || (strcmp(yn, "y") == 0)) {
-                ed.saveFile();
-    	        ed.openFile(str);
-            } else if ((strcmp(yn,"no") == 0) || (strcmp(yn, "n") == 0)) {
-                ed.openFile(str);
-            }
-	    move(trow-1,1);
-	    clrtoeol();
-            mvaddstr(trow-1,0,str);
-            refresh();
-            } else {
-                while(ed.if_file_exist(str) == false) {
-                    mvwprintw(menu,7,2,"File not found. Enter filename: ");
-                    wgetstr(menu,str);
-	                wmove(menu,7,0);
-                    wclrtoeol(menu);
-                    wrefresh(menu);
-                    ed.openFile(str);
-                }
-	            move(trow-1,1);
-	            clrtoeol();
-                mvaddstr(trow-1,0,str);
-                refresh();
-            }
-            curs_set(1);
-            break;
+  		mvwprintw(menu,7,2 ,"Enter file name: ");
+  		wgetstr(menu,str);
+  		wmove(menu,7,2);
+  		if (ed.if_file_exist(str) == true){
+  			wclrtoeol(menu);
+  			mvwprintw(menu,7,2,"Save changes? (y/n): ");
+  			wgetstr(menu,yn);
+  			if ((strcmp(yn,"yes") == 0) || (strcmp(yn, "y") == 0)) {
+  				ed.saveFile();
+  				ed.openFile(str);
+  			} else if ((strcmp(yn,"no") == 0) || (strcmp(yn, "n") == 0)) {
+  				ed.openFile(str);
+  			}
+  			move(trow-1,1);
+  			clrtoeol();
+  			mvaddstr(trow-1,0,str);
+  			refresh();
+  		} else {
+  			while(ed.if_file_exist(str) == false) {
+  				mvwprintw(menu,7,2,"File not found. Enter filename: ");
+  				wgetstr(menu,str);
+  				wmove(menu,7,0);
+  				wclrtoeol(menu);
+  				wrefresh(menu);
+  				ed.openFile(str);
+  			}
+  			move(trow-1,1);
+  			clrtoeol();
+  			mvaddstr(trow-1,0,str);
+  			refresh();
+  		}
+  		curs_set(1);
+  		break;
 
 		case 1: // Save
-			ed.saveFile();
-			curs_set(1);
-			break;
+		ed.saveFile();
+		curs_set(1);
+		break;
 		case 2: // Save As
-    	    mvwprintw(menu,7,2 , "Enter file name: ");
-    	    wgetstr(menu,str);
-            if (ed.if_file_exist(str) == false) {
-     	 ed.saveFileAs(str);
-	 move(trow-1,1);
-	 clrtoeol();
-      	 mvaddstr(trow-1,0,str);
-	 refresh();
-    } else {
-      while(ed.if_file_exist(str) == true) {
-        mvwprintw(menu,7,2,"File already exists.Overwrite? (y/n):  ");
-        wgetstr(menu,yn);
-        if ((strcmp(yn, "yes") == 0) || (strcmp(yn, "y") == 0)) {
-            ed.saveFileAs(str);
-            move(trow-1,1);
-	        clrtoeol();
-            mvaddstr(trow-1,0,str);
-		refresh();
-            break;
-        } else if ((strcmp(yn, "no") == 0) || (strcmp(yn, "n") == 0)) {
-            break;
-        }
-      }
-    }
-	curs_set(1);
-    break;
+		mvwprintw(menu,7,2 , "Enter file name: ");
+		wgetstr(menu,str);
+		if (ed.if_file_exist(str) == false) {
+			ed.saveFileAs(str);
+			move(trow-1,1);
+			clrtoeol();
+			mvaddstr(trow-1,0,str);
+			refresh();
+		} else {
+			while(ed.if_file_exist(str) == true) {
+				mvwprintw(menu,7,2,"File already exists.Overwrite? (y/n):  ");
+				wgetstr(menu,yn);
+				if ((strcmp(yn, "yes") == 0) || (strcmp(yn, "y") == 0)) {
+					ed.saveFileAs(str);
+					move(trow-1,1);
+					clrtoeol();
+					mvaddstr(trow-1,0,str);
+					refresh();
+					break;
+				} else if ((strcmp(yn, "no") == 0) || (strcmp(yn, "n") == 0)) {
+					break;
+				}
+			}
+		}
+		curs_set(1);
+		break;
 		case 3: // Quit
-    mvwprintw(menu,7,2,"Save changes? (y/n): ");
-    wgetstr(menu,yn);
-    if ((strcmp(yn,"yes") == 0) || (strcmp(yn, "y") == 0)) {
-      ed.saveFile();
-      doExit = true;
-    } else if ((strcmp(yn,"no") == 0) || (strcmp(yn, "n") == 0)) {
-    doExit = true;
-    }
-      break;
-  }
-    noecho();
+		mvwprintw(menu,7,2,"Save changes? (y/n): ");
+		wgetstr(menu,yn);
+		if ((strcmp(yn,"yes") == 0) || (strcmp(yn, "y") == 0)) {
+			ed.saveFile();
+			doExit = true;
+		} else if ((strcmp(yn,"no") == 0) || (strcmp(yn, "n") == 0)) {
+			doExit = true;
+		}
+		break;
+	}
+	noecho();
 }
 
 static void quit() {

@@ -9,17 +9,17 @@ using std::string;
 using std::vector;
 
 class Buffer {
-    public:
-        vector<string> text;
+public:
+    vector<string> text;
 
-        Buffer();
+    Buffer();
 
-        void addLine(string);
-        void insLine(string, int);
-        void delLine(int);
+    void addLine(string);
+    void insLine(string, int);
+    void delLine(int);
 
-        string replaceTabs(string);
-        string replaceSpaces(string);
+    string replaceTabs(string);
+    string replaceSpaces(string);
 };
 
 #endif
