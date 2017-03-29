@@ -70,7 +70,7 @@ void init_ncurses() {
 	psize = trow-5;
 
 	refresh();
-	
+
 	WINDOW * text_border; // new window on top of the stdscr
 	text_border = newwin(LINES-2,COLS,1,0); // setting dimensions of text_area window
 	box(text_border, 0, 0); // window border
@@ -184,7 +184,6 @@ void showMenu() {
 
 	menu = newwin(10, 40, (trow-10)/2, (tcol-40)/2);
 	box(menu, 0, 0);
-	echo();
 	mvwhline(menu, 2, 1, 0, 38);
 	touchwin(menu);
 	curs_set(0);
@@ -222,6 +221,7 @@ void showMenu() {
 		}
 	}
 
+    echo();
 	switch (highlight) {
 	    char str[80];
     	char yn[80];
@@ -231,15 +231,15 @@ void showMenu() {
 	wmove(menu,7,2);
         if (ed.if_file_exist(str) == true){
 		wclrtoeol(menu);
-          	mvwprintw(menu,7,2,"Save changes?");
+          	mvwprintw(menu,7,2,"Save changes? (y/n): ");
       	    wgetstr(menu,yn);
-            if (strcmp(yn,"yes") == 0) {
+            if ((strcmp(yn,"yes") == 0) || (strcmp(yn, "y") == 0)) {
                 ed.saveFile();
     	        ed.openFile(str);
-            } else if (strcmp(yn,"no") == 0) {
+            } else if ((strcmp(yn,"no") == 0) || (strcmp(yn, "n") == 0)) {
                 ed.openFile(str);
             }
-	    move(trow-1,1):
+	    move(trow-1,1);
 	    clrtoeol();
             mvaddstr(trow-1,0,str);
             refresh();
@@ -275,16 +275,16 @@ void showMenu() {
 	 refresh();
     } else {
       while(ed.if_file_exist(str) == true) {
-        mvwprintw(menu,7,2,"File already exists.Overwrite? ");
+        mvwprintw(menu,7,2,"File already exists.Overwrite? (y/n):  ");
         wgetstr(menu,yn);
-        if (strcmp(yn,"yes") == 0) {
+        if ((strcmp(yn, "yes") == 0) || (strcmp(yn, "y") == 0)) {
             ed.saveFileAs(str);
             move(trow-1,1);
 	        clrtoeol();
             mvaddstr(trow-1,0,str);
 		refresh();
             break;
-        } else if (strcmp(yn,"no") == 0) {
+        } else if ((strcmp(yn, "no") == 0) || (strcmp(yn, "n") == 0)) {
             break;
         }
       }
@@ -292,16 +292,17 @@ void showMenu() {
 	curs_set(1);
     break;
 		case 3: // Quit
-    mvwprintw(menu,7,2,"Save changes?");
+    mvwprintw(menu,7,2,"Save changes? (y/n): ");
     wgetstr(menu,yn);
-    if (strcmp(yn,"yes") == 0) {
+    if ((strcmp(yn,"yes") == 0) || (strcmp(yn, "y") == 0)) {
       ed.saveFile();
       doExit = true;
-    } else if (strcmp(yn,"no") == 0) {
+    } else if ((strcmp(yn,"no") == 0) || (strcmp(yn, "n") == 0)) {
     doExit = true;
     }
       break;
   }
+    noecho();
 }
 
 static void quit() {

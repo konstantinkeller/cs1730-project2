@@ -9,18 +9,19 @@ using std::string;
 
 class Editor {
     string fname;
-    Buffer * contents;
+    Buffer* contents;
 
-    public: 
-        Editor();
-        Editor(char * file);
-        Buffer * getBuffer();
-        string getFilename();
+public:
+    Editor();
+    Editor(char* file);
+    Buffer* getBuffer();
+    string getFilename();
 
-        bool saveFile();
-        bool saveFileAs(char * filename);
-        bool openFile(char * filename); // I changed these from string to char * but both worked
-        bool if_file_exist(char * filename);
+    bool saveFile();
+    bool saveFileAs(char* filename);
+    bool openFile(
+        char* filename); // I changed these from string to char * but both worked
+    bool if_file_exist(char* filename);
 };
 
 #endif
